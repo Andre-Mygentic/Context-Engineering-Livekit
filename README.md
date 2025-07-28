@@ -18,6 +18,28 @@ This project implements a voice agent that:
 - **Turn Detection**: LiveKit's multilingual semantic model
 - **Production Ready**: Docker deployment, monitoring, metrics
 
+## 📁 Project Structure
+
+```
+appointment-confirmation-agent/
+├── agent/                  # Core agent implementation
+│   └── appointment_agent.py
+├── token_server/          # JWT token server for authentication
+│   ├── token_server.py
+│   ├── request_token.py
+│   ├── test_token_server.py
+│   ├── start_token_server.sh
+│   └── README.md
+├── examples/              # Example implementations
+├── PRPs/                  # Product Requirements Prompts
+├── logs/                  # Application logs
+├── venv/                  # Python virtual environment
+├── requirements.txt       # Python dependencies
+├── .env.example          # Environment template
+├── start_agent.sh        # Agent startup script
+└── README.md             # This file
+```
+
 ## 🏗️ Architecture
 
 ```
@@ -61,10 +83,26 @@ Voice Pipeline:
 
 4. **Run the agent**
    ```bash
-   python appointment_agent.py dev
+   ./start_agent.sh
+   # Or manually: python agent/appointment_agent.py dev
    ```
 
 ## 🧪 Testing
+
+### Start the Token Server
+
+Before testing with a frontend, start the token server:
+
+```bash
+cd token_server
+./start_token_server.sh
+# Server runs on http://localhost:8002
+```
+
+Test token generation:
+```bash
+python token_server/request_token.py --email test@example.com --name "Test User"
+```
 
 ### Using the React Frontend
 
