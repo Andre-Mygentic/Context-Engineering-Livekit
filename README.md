@@ -30,6 +30,11 @@ appointment-confirmation-agent/
 │   ├── test_token_server.py
 │   ├── start_token_server.sh
 │   └── README.md
+├── frontend/              # React testing UI
+│   ├── app/              # Next.js app directory
+│   ├── components/       # React components
+│   ├── start_frontend.sh # Frontend startup script
+│   └── ...
 ├── examples/              # Example implementations
 ├── PRPs/                  # Product Requirements Prompts
 ├── logs/                  # Application logs
@@ -106,21 +111,22 @@ python token_server/request_token.py --email test@example.com --name "Test User"
 
 ### Using the React Frontend
 
-1. **Clone the testing UI**
+The frontend is already set up in the `frontend/` directory.
+
+1. **Start the frontend**
    ```bash
-   git clone https://github.com/livekit-examples/agent-starter-react.git appointment-frontend
-   cd appointment-frontend
-   npm install
+   cd frontend
+   ./start_frontend.sh
+   # Or manually: pnpm dev
    ```
 
-2. **Configure and run**
-   ```bash
-   cp .env.example .env.local
-   # Add your LiveKit credentials
-   npm run dev
-   ```
+2. **Access at** http://localhost:3000
 
-3. **Access at** http://localhost:3000
+3. **Frontend features**
+   - Customized for appointment confirmation testing
+   - Integrated with our token server
+   - Pre-configured test scenarios
+   - Audio-only mode (no video/screen share)
 
 ### Test Scenarios
 - ✅ Customer confirms appointment
