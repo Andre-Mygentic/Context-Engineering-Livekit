@@ -24,6 +24,7 @@ export async function GET() {
     const timestamp = Date.now();
     const participantName = `Test Patient ${timestamp}`;
     const userEmail = `patient-${timestamp}@test.com`;
+    const userId = `user-${timestamp}`;
     const roomName = `appointment-test-${timestamp}`;
 
     // Request token from our token server
@@ -35,6 +36,7 @@ export async function GET() {
       body: JSON.stringify({
         user_email: userEmail,
         full_name: participantName,
+        user_id: userId,
         room_name: roomName,
       }),
     });
