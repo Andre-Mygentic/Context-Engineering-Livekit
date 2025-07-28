@@ -88,12 +88,8 @@ class AppointmentConfirmationAgent(Agent):
         {self.appointment_details['date']} for your {self.appointment_details['service']}. 
         Are you still able to make it?"""
         
-        # Use the session to generate the greeting
-        self.session.chat_ctx.append(
-            role="assistant",
-            content=greeting
-        )
-        await self.session.generate_reply()
+        # Use the session to speak the greeting
+        await self.session.say(greeting)
 
     @function_tool
     async def confirm_appointment(
