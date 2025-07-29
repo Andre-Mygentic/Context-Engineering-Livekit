@@ -33,28 +33,43 @@ appointment-confirmation-agent/
 │   └── appointment_agent.py    # Main agent with natural speech
 ├── token_server/              # JWT authentication server
 │   ├── token_server.py        # FastAPI implementation
-│   └── Dockerfile             # Container configuration
+│   ├── Dockerfile             # Container configuration
+│   ├── requirements.txt       # Server dependencies
+│   ├── test_token_server.py   # Token server tests
+│   └── request_token.py       # Token request utility
 ├── frontend/                  # React testing interface (from agent-starter-react)
 │   ├── app/                   # Next.js app directory
-│   └── components/            # UI components
+│   ├── components/            # UI components
+│   ├── hooks/                 # React hooks
+│   ├── lib/                   # Utilities and types
+│   └── public/                # Static assets
 ├── examples/                  # Comprehensive implementation examples
 │   ├── basic_voice_agent/     # Simple agent pattern
+│   ├── realtime_agent/        # OpenAI Realtime API example
 │   ├── testing_patterns/      # Unit and integration tests
 │   ├── multi_agent_system/    # Agent orchestration
 │   ├── tool_enabled_agent/    # Function calling examples
-│   ├── metrics_monitoring/    # Observability patterns
 │   ├── token_server/          # Authentication implementation
-│   └── frontend_client/       # Frontend setup guide
+│   ├── frontend_client/       # Frontend setup guide
+│   └── prp_commands/          # Custom Claude commands
+│       ├── generate-livekit-prp.md
+│       ├── execute-livekit-prp.md
+│       └── FeatureForge.md
 ├── deployment/                # Production deployment configs
 │   ├── ecs-task-definition.json
 │   ├── buildspec.yml
-│   └── docker-compose.prod.yml
+│   ├── docker-compose.prod.yml
+│   └── README.md
 ├── PRPs/                      # Product Requirements Prompts
 │   ├── livekit-appointment-confirmation.md
-│   └── ai_docs/              # Supporting documentation
+│   ├── ai_docs/              # Supporting documentation
+│   └── templates/            # PRP templates
+├── logs/                      # Application logs
 ├── docker-compose.yml         # Local development setup
 ├── Dockerfile                 # Agent container definition
-└── requirements.txt           # Python dependencies
+├── requirements.txt           # Python dependencies
+├── CLAUDE.md                  # Archon integration docs
+└── *.sh                       # Utility scripts
 ```
 
 ## 🎯 The PRP Framework Experiment
@@ -171,32 +186,32 @@ The agent implements human-like conversation patterns:
 
 ## 📚 Examples Collection
 
-The `examples/` directory contains seven comprehensive examples:
+The `examples/` directory contains comprehensive implementation examples:
 
 ### 1. **basic_voice_agent/**
 - Minimal agent implementation
 - Core concepts and patterns
 - Perfect starting point
 
-### 2. **testing_patterns/**
+### 2. **realtime_agent/**
+- OpenAI Realtime API integration
+- Low-latency voice interactions
+- Pure audio pipeline example
+
+### 3. **testing_patterns/**
 - Unit test examples
 - Integration testing strategies
 - Mock implementations
 
-### 3. **multi_agent_system/**
+### 4. **multi_agent_system/**
 - Agent handoff patterns
 - Specialist agent routing
 - Complex conversation flows
 
-### 4. **tool_enabled_agent/**
+### 5. **tool_enabled_agent/**
 - Function calling implementation
 - Database integration
 - External API usage
-
-### 5. **metrics_monitoring/**
-- Prometheus metrics
-- Performance tracking
-- Observability patterns
 
 ### 6. **token_server/**
 - Complete authentication server
@@ -207,6 +222,12 @@ The `examples/` directory contains seven comprehensive examples:
 - Frontend setup guide
 - Integration instructions
 - Testing scenarios
+
+### 8. **prp_commands/**
+- Custom Claude commands
+- `/generate-livekit-prp` - Generate PRP documents
+- `/execute-livekit-prp` - Execute PRP implementations
+- `FeatureForge.md` - Feature specification tool
 
 ## 🚢 Deployment
 
