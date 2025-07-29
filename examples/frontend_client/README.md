@@ -56,15 +56,23 @@ npm install
 Create a `.env.local` file in the frontend directory:
 
 ```env
-# LiveKit Configuration
-NEXT_PUBLIC_LIVEKIT_URL=wss://your-project.livekit.cloud
+# LiveKit Server Configuration (for server-side token generation if not using external token server)
+LIVEKIT_URL=wss://your-project.livekit.cloud
+LIVEKIT_API_KEY=your-api-key
+LIVEKIT_API_SECRET=your-api-secret
 
-# Token Server
+# Token Server URL (for client-side token requests)
 NEXT_PUBLIC_TOKEN_SERVER_URL=http://localhost:8002
+
+# Optional: App Configuration
+NEXT_PUBLIC_APP_CONFIG_ENDPOINT=
+SANDBOX_ID=
 
 # Optional: Agent Configuration
 NEXT_PUBLIC_AGENT_ROOM_PREFIX=appointment-test-
 ```
+
+**Note:** If you're using the external token server (recommended), you only need `NEXT_PUBLIC_TOKEN_SERVER_URL`. The LiveKit credentials (`LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`) should be kept on the token server for security.
 
 ### 2. Token Server Integration
 
