@@ -92,8 +92,8 @@ You can find the original PRP document at: `PRPs/livekit-appointment-confirmatio
 ### 1. Clone and Setup
 
 ```bash
-git clone https://github.com/Andre-Mygentic/appointment-confirmation-agent
-cd appointment-confirmation-agent
+git clone https://github.com/Andre-Mygentic/Context-Engineering-Livekit
+cd Context-Engineering-Livekit
 
 # Create Python virtual environment
 python -m venv venv
