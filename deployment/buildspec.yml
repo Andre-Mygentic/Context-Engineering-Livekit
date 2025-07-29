@@ -1,0 +1,47 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+  
+  build:
+    commands:
+      - echo Build started on `date`
+      
+      # Build appointment agent
+      - echo Building the appointment agent Docker image...
+      - docker build -t $REPOSITORY_URI/appointment-agent:latest .
+      - docker tag $REPOSITORY_URI/appointment-agent:latest $REPOSITORY_URI/appointment-agent:$IMAGE_TAG
+      
+      # Build token server
+      - echo Building the token server Docker image...
+      - docker build -t $REPOSITORY_URI/appointment-token-server:latest ./token_server
+      - docker tag $REPOSITORY_URI/appointment-token-server:latest $REPOSITORY_URI/appointment-token-server:$IMAGE_TAG
+  
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      
+      # Push appointment agent
+      - echo Pushing the appointment agent Docker image...
+      - docker push $REPOSITORY_URI/appointment-agent:latest
+      - docker push $REPOSITORY_URI/appointment-agent:$IMAGE_TAG
+      
+      # Push token server
+      - echo Pushing the token server Docker image...
+      - docker push $REPOSITORY_URI/appointment-token-server:latest
+      - docker push $REPOSITORY_URI/appointment-token-server:$IMAGE_TAG
+      
+      # Update task definition
+      - echo Writing image definitions file...
+      - printf '[{"name":"appointment-agent","imageUri":"%s"},{"name":"token-server","imageUri":"%s"}]' $REPOSITORY_URI/appointment-agent:$IMAGE_TAG $REPOSITORY_URI/appointment-token-server:$IMAGE_TAG > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
+    - deployment/ecs-task-definition.json

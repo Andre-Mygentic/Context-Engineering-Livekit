@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  # Token server for authentication
+  token-server:
+    build:
+      context: ./token_server
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}
+      - LIVEKIT_URL=${LIVEKIT_URL}
+      - TOKEN_SERVER_PORT=8002
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:3005
+      - TOKEN_EXPIRY_HOURS=24
+    volumes:
+      - ./token_server:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - appointment-network
+
+  # LiveKit appointment agent
+  appointment-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      # LiveKit configuration
+      - LIVEKIT_URL=${LIVEKIT_URL}
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}
+      # API Keys
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY}
+      # Agent configuration
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./agent:/app/agent
+      - ./logs:/app/logs
+    depends_on:
+      token-server:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - appointment-network
+    command: ["python", "agent/appointment_agent.py", "dev"]
+
+  # React frontend (development)
+  frontend:
+    image: node:18-alpine
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_LIVEKIT_URL=${LIVEKIT_URL}
+      - NEXT_PUBLIC_TOKEN_SERVER_URL=http://localhost:8002
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - token-server
+    restart: unless-stopped
+    networks:
+      - appointment-network
+
+  # Optional: Nginx reverse proxy for production-like setup
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - token-server
+      - frontend
+    networks:
+      - appointment-network
+    profiles:
+      - production
+
+  # Optional: Redis for caching/session management
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - appointment-network
+    profiles:
+      - full
+
+networks:
+  appointment-network:
+    driver: bridge
+
+volumes:
+  redis-data:

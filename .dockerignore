@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Development
+.env
+.env.local
+*.log
+logs/
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.cover
+.hypothesis/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Frontend (if included in same repo)
+frontend/node_modules/
+frontend/.next/
+frontend/build/
+frontend/dist/
+frontend/*.log
+
+# Examples
+examples/
+
+# CI/CD
+.github/
+deployment/
+buildspec.yml
+
+# Other
+.dockerignore
+Dockerfile
+docker-compose*.yml

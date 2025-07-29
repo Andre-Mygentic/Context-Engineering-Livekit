@@ -1,0 +1,55 @@
+version: '3.8'
+
+# Production docker-compose configuration
+# Use with: docker-compose -f docker-compose.yml -f deployment/docker-compose.prod.yml up
+
+services:
+  token-server:
+    image: ${DOCKER_REGISTRY}/appointment-token-server:${VERSION:-latest}
+    environment:
+      - CORS_ORIGINS=${PRODUCTION_CORS_ORIGINS}
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  appointment-agent:
+    image: ${DOCKER_REGISTRY}/appointment-agent:${VERSION:-latest}
+    deploy:
+      replicas: ${AGENT_REPLICAS:-3}
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Remove frontend in production (served separately)
+  frontend:
+    deploy:
+      replicas: 0
+
+  # Enable nginx in production
+  nginx:
+    profiles:
+      - !production
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
