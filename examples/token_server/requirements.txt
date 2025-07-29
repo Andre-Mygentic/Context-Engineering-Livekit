@@ -1,0 +1,14 @@
+# LiveKit Token Server Requirements
+
+# Web framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+
+# LiveKit SDK
+livekit-api==0.6.0
+
+# Data validation
+pydantic==2.5.0
+
+# For production deployment
+gunicorn==21.2.0
